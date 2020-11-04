@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NorthwindDatabase\NorthwindDatabase.csproj" />
-    <ProjectReference Include="..\CommonLibraries.Testing.EntityFrameworkCore\Foxy.Testing.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Foxy.Testing.EntityFrameworkCore\Foxy.Testing.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

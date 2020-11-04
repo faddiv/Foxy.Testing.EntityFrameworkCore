@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foxy.Testing.EntityFrameworkCore", "CommonLibraries.Testing.EntityFrameworkCore\Foxy.Testing.EntityFrameworkCore.csproj", "{4059D384-FACB-4ED2-9F72-8D2A0E36E224}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foxy.Testing.EntityFrameworkCore", "Foxy.Testing.EntityFrameworkCore\Foxy.Testing.EntityFrameworkCore.csproj", "{4059D384-FACB-4ED2-9F72-8D2A0E36E224}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foxy.Testing.EntityFrameworkCore.Tests", "CommonLibraries.Testing.EntityFrameworkCore.Tests\Foxy.Testing.EntityFrameworkCore.Tests.csproj", "{85E7688A-380E-4353-9555-FF8B4640B9DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foxy.Testing.EntityFrameworkCore.Tests", "Foxy.Testing.EntityFrameworkCore.Tests\Foxy.Testing.EntityFrameworkCore.Tests.csproj", "{85E7688A-380E-4353-9555-FF8B4640B9DC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthwindDatabase", "NorthwindDatabase\NorthwindDatabase.csproj", "{30F3837C-0613-4FDB-861F-530A4617D5FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet", "CommonLibraries.Testing.EntityFrameworkCore.BenchmarkDotNet\Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet.csproj", "{6ABFABC5-41DC-47CE-A84C-9BD6CE4C338A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet", "Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet\Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet.csproj", "{6ABFABC5-41DC-47CE-A84C-9BD6CE4C338A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthWindDatabaseFactory", "NorthWindDatabaseFactory\NorthWindDatabaseFactory.csproj", "{7B6942FA-D81B-46FD-9FFD-D23DF20E5B14}"
 EndProject
