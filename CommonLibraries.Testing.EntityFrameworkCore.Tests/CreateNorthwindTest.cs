@@ -1,11 +1,9 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NorthwindDatabase;
-using System;
-using System.IO;
 using Xunit;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore
+namespace Foxy.Testing.EntityFrameworkCore
 {
     public class CreateNorthwindTest
     {

@@ -1,6 +1,4 @@
-﻿using NorthwindDatabase;
-
-namespace CommonLibraries.Testing.EntityFrameworkCore.Tests
+namespace NorthwindDatabase
 {
     public partial class OrderDetails
     {

@@ -1,5 +1,4 @@
-﻿using CommonLibraries.Testing.EntityFrameworkCore.Tests;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace NorthwindDatabase
 {

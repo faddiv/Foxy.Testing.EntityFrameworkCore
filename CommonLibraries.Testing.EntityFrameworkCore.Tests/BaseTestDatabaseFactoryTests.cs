@@ -4,7 +4,7 @@ using NorthwindDatabase;
 using System.Data;
 using Xunit;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore
+namespace Foxy.Testing.EntityFrameworkCore
 {
     public class BaseTestDatabaseFactoryTests
     {

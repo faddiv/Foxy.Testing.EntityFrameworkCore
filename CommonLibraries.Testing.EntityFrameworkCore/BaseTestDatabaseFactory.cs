@@ -1,11 +1,11 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 using System.Linq.Expressions;
 using System.Threading;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore
+namespace Foxy.Testing.EntityFrameworkCore
 {
     public class BaseTestDatabaseFactory<TDbContext>
         where TDbContext : DbContext
@@ -81,7 +81,7 @@ namespace CommonLibraries.Testing.EntityFrameworkCore
         {
             var options = new DbContextOptionsBuilder<TDbContext>();
             options.UseSqlite(connection);
-            
+
             return _constructor.Value(options.Options);
         }
         protected virtual void PrepareDbContext(TDbContext context)

@@ -1,8 +1,8 @@
-﻿using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Running;
 using System.Diagnostics;
 using System.IO;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore.BenchmarkDotNet
+namespace Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet
 {
     public static class Program
     {

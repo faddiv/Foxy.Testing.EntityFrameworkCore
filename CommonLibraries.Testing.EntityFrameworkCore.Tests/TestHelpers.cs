@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using NorthwindDatabase;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore
+namespace Foxy.Testing.EntityFrameworkCore
 {
     public class TestHelpers
     {

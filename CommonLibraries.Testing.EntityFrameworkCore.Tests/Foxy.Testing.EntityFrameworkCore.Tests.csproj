@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>CommonLibraries.Testing.EntityFrameworkCore</RootNamespace>
+    <RootNamespace>Foxy.Testing.EntityFrameworkCore</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

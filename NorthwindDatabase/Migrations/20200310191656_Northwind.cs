@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore.Tests.Migrations
+namespace NorthwindDatabase.Migrations
 {
     public partial class Northwind : Migration
     {

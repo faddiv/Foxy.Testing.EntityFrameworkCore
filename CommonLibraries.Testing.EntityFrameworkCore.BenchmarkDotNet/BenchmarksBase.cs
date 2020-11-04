@@ -1,9 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Mathematics;
 using BenchmarkDotNet.Order;
 using Perfolizer.Mathematics.OutlierDetection;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore.BenchmarkDotNet
+namespace Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet
 {
     [HtmlExporter, RPlotExporter]
     [Orderer(SummaryOrderPolicy.Default)]

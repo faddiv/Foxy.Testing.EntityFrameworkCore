@@ -1,11 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NorthwindDatabase;
-using System;
-using System.IO;
 
-namespace CommonLibraries.Testing.EntityFrameworkCore.BenchmarkDotNet
+namespace Foxy.Testing.EntityFrameworkCore.BenchmarkDotNet
 {
     [ArtifactsPath(".\\DatabaseCreationBenchmarks")]
     public class DatabaseCreationBenchmarks : BenchmarksBase
