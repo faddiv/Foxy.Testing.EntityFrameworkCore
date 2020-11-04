@@ -13,6 +13,7 @@ namespace Foxy.Testing.EntityFrameworkCore
         private SqliteConnection _prototypeConnection;
         private object _syncLock = new object();
         private bool _initialized;
+        private bool _disposedValue = false; // To detect redundant calls
         private Lazy<Func<DbContextOptions, TDbContext>> _constructor;
 
         public BaseTestDatabaseFactory(
@@ -26,6 +27,7 @@ namespace Foxy.Testing.EntityFrameworkCore
         }
 
         public string PrototypeConnectionString { get; }
+
         public string InstanceConnectionString { get; }
 
         public TDbContext CreateDbContext()
@@ -40,6 +42,7 @@ namespace Foxy.Testing.EntityFrameworkCore
             _prototypeConnection.BackupDatabase(instanceConnection);
             return CreateDbContextInstance(instanceConnection);
         }
+
         private SqliteConnection CreatePrototypeConnection()
         {
             var prototypeConnection = new SqliteConnection(PrototypeConnectionString);
@@ -84,23 +87,23 @@ namespace Foxy.Testing.EntityFrameworkCore
 
             return _constructor.Value(options.Options);
         }
+
         protected virtual void PrepareDbContext(TDbContext context)
         {
             throw new NotImplementedException("PrepareDbContext must be implemented.");
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
                     _prototypeConnection?.Dispose();
                 }
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 
