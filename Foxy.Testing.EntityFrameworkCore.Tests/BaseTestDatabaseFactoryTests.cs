@@ -100,9 +100,7 @@ namespace Foxy.Testing.EntityFrameworkCore
         public void CreateDbContext_first_creates_prototype_then_instance()
         {
             // Arrange
-            var count = 0;
             var instance = new NorthWindDatabaseFactory();
-            instance.Prepared += () => count++;
 
             // Act
             var dbContext = instance.CreateDbContext();
@@ -112,6 +110,19 @@ namespace Foxy.Testing.EntityFrameworkCore
             instance.Instance.Should().NotBeNull();
             instance.Instance.Should().BeSameAs(dbContext.Database.GetDbConnection());
             instance.Prototype.Should().NotBeSameAs(instance.Instance);
+        }
+
+        [Fact]
+        public void ConfigureDbContextOptionsBuilder_is_called()
+        {
+            // Arrange
+            var instance = new NorthWindDatabaseFactory();
+
+            // Act
+            instance.CreateDbContext();
+
+            // Assert
+            instance.Builder.Should().NotBeNull();
         }
     }
 }

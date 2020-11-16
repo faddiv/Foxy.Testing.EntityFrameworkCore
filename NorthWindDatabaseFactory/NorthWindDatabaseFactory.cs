@@ -1,5 +1,6 @@
 using Foxy.Testing.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 
@@ -23,6 +24,8 @@ namespace NorthwindDatabase
         public SqliteConnection Prototype { get; set; }
 
         public SqliteConnection Instance { get; set; }
+
+        public DbContextOptionsBuilder<TestDbContext> Builder { get; private set; }
 
         private static string SqliteLocation()
         {
@@ -69,6 +72,12 @@ namespace NorthwindDatabase
         protected override bool ShouldRunDatabasePreparation(SqliteConnection prototypeConnection)
         {
             return base.ShouldRunDatabasePreparation(prototypeConnection);
+        }
+
+        protected override void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TestDbContext> builder)
+        {
+            Builder = builder;
+            base.ConfigureDbContextOptionsBuilder(builder);
         }
     }
 }

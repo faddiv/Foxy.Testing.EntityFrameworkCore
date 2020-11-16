@@ -84,8 +84,14 @@ namespace Foxy.Testing.EntityFrameworkCore
         {
             var options = new DbContextOptionsBuilder<TDbContext>();
             options.UseSqlite(connection);
+            ConfigureDbContextOptionsBuilder(options);
 
             return _constructor.Value(options.Options);
+        }
+
+        protected virtual void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TDbContext> builder)
+        {
+
         }
 
         protected virtual void PrepareDbContext(TDbContext context)
