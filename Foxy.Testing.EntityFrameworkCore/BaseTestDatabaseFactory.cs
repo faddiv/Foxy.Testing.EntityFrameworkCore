@@ -96,7 +96,6 @@ namespace Foxy.Testing.EntityFrameworkCore
 
         protected virtual void PrepareDbContext(TDbContext context)
         {
-            throw new NotImplementedException("PrepareDbContext must be implemented.");
         }
 
         #region IDisposable Support
