@@ -63,7 +63,7 @@ namespace Foxy.Testing.EntityFrameworkCore
             return prototypeConnection;
         }
 
-        private static bool ShouldRunDatabasePreparation(SqliteConnection prototypeConnection)
+        protected virtual bool ShouldRunDatabasePreparation(SqliteConnection prototypeConnection)
         {
             return string.Equals(prototypeConnection.DataSource, ":memory:", StringComparison.OrdinalIgnoreCase)
                 || !File.Exists(prototypeConnection.DataSource);

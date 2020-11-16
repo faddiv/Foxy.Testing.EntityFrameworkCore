@@ -1,6 +1,5 @@
 using Foxy.Testing.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 
@@ -65,6 +64,11 @@ namespace NorthwindDatabase
         {
             _scaffold.Run(context);
             Prepared?.Invoke();
+        }
+
+        protected override bool ShouldRunDatabasePreparation(SqliteConnection prototypeConnection)
+        {
+            return base.ShouldRunDatabasePreparation(prototypeConnection);
         }
     }
 }
