@@ -14,7 +14,7 @@ namespace Foxy.Testing.EntityFrameworkCore
         private object _syncLock = new object();
         private bool _initialized;
         private bool _disposedValue = false; // To detect redundant calls
-        private Lazy<Func<DbContextOptions, TDbContext>> _constructor;
+        private Lazy<Func<DbContextOptions<TDbContext>, TDbContext>> _constructor;
 
         public BaseTestDatabaseFactory(
             string prototypeConnectionString = "Data Source=:memory:;",
@@ -22,7 +22,7 @@ namespace Foxy.Testing.EntityFrameworkCore
         {
             PrototypeConnectionString = prototypeConnectionString;
             InstanceConnectionString = instanceConnectionString;
-            _constructor = new Lazy<Func<DbContextOptions, TDbContext>>(
+            _constructor = new Lazy<Func<DbContextOptions<TDbContext>, TDbContext>>(
                 CreateDbContextFactory, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
@@ -74,14 +74,19 @@ namespace Foxy.Testing.EntityFrameworkCore
                 || !File.Exists(prototypeConnection.DataSource);
         }
 
-        private static Func<DbContextOptions, TDbContext> CreateDbContextFactory()
+        private static Func<DbContextOptions<TDbContext>, TDbContext> CreateDbContextFactory()
         {
-            var constructor = typeof(TDbContext).GetConstructor(new[] { typeof(DbContextOptions) });
+            Type dbContextType = typeof(TDbContext);
+            var constructor = dbContextType.GetConstructor(new[] { typeof(DbContextOptions) });
+            if(constructor == null)
+            {
+                constructor = dbContextType.GetConstructor(new[] { typeof(DbContextOptions<TDbContext>) });
+            }
             if (constructor == null)
                 throw new Exception($"Either CreateDbContextInstance must be overidden or {typeof(DbContextOptions).Name} needs a constructor with DbContextOptions parameter.");
-            var parameter = Expression.Parameter(typeof(DbContextOptions), "options");
+            var parameter = Expression.Parameter(typeof(DbContextOptions<TDbContext>), "options");
             var ctor = Expression.New(constructor, parameter);
-            var lambda = Expression.Lambda<Func<DbContextOptions, TDbContext>>(ctor, parameter);
+            var lambda = Expression.Lambda<Func<DbContextOptions<TDbContext>, TDbContext>>(ctor, parameter);
             return lambda.Compile();
         }
 

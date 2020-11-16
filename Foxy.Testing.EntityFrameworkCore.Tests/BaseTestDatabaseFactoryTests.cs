@@ -138,5 +138,15 @@ namespace Foxy.Testing.EntityFrameworkCore
             instance.MigratedDbContext.Should().NotBeNull();
             instance.MigratedDbContext.Should().NotBeSameAs(dbContext);
         }
+
+        [Fact]
+        public void Works_with_generic_DbContextOptions()
+        {
+            var factory = new OtherDbContextFactory();
+
+            var result = factory.CreateDbContext();
+
+            result.Should().NotBeNull();
+        }
     }
 }
