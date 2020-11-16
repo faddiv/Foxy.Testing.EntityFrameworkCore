@@ -1,4 +1,4 @@
-﻿using Foxy.Testing.EntityFrameworkCore;
+using Foxy.Testing.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,6 +21,10 @@ namespace NorthwindDatabase
             _scaffold = scaffold ?? new DatabaseScaffold();
         }
 
+        public SqliteConnection Prototype { get; set; }
+
+        public SqliteConnection Instance { get; set; }
+
         private static string SqliteLocation()
         {
             var directory = Environment.CurrentDirectory;
@@ -42,12 +46,21 @@ namespace NorthwindDatabase
         {
             return Path.Combine(directory, "prototype.db");
         }
-        /*
-        protected override TestDbContext CreateDbContextInstance(SqliteConnection connection)
+
+        protected override TestDbContext CreateDbContextInstance(SqliteConnection connection, bool isPrototype)
         {
-            return TestDbContextProvider.CreateDbContext(connection);
+            if (isPrototype)
+            {
+                Prototype = connection;
+            }
+            else
+            {
+                Instance = connection;
+            }
+
+            return base.CreateDbContextInstance(connection, isPrototype);
         }
-        */
+
         protected override void PrepareDbContext(TestDbContext context)
         {
             _scaffold.Run(context);

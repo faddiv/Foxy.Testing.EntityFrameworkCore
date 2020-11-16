@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NorthwindDatabase;
 using System.Data;
 using Xunit;
@@ -95,5 +96,22 @@ namespace Foxy.Testing.EntityFrameworkCore
             TestHelpers.ShouldBePrepared(dbContext);
         }
 
+        [Fact]
+        public void CreateDbContext_first_creates_prototype_then_instance()
+        {
+            // Arrange
+            var count = 0;
+            var instance = new NorthWindDatabaseFactory();
+            instance.Prepared += () => count++;
+
+            // Act
+            var dbContext = instance.CreateDbContext();
+
+            // Assert
+            instance.Prototype.Should().NotBeNull();
+            instance.Instance.Should().NotBeNull();
+            instance.Instance.Should().BeSameAs(dbContext.Database.GetDbConnection());
+            instance.Prototype.Should().NotBeSameAs(instance.Instance);
+        }
     }
 }

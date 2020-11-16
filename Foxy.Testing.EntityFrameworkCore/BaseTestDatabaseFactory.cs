@@ -40,7 +40,7 @@ namespace Foxy.Testing.EntityFrameworkCore
             var instanceConnection = new SqliteConnection(InstanceConnectionString);
             instanceConnection.Open();
             _prototypeConnection.BackupDatabase(instanceConnection);
-            return CreateDbContextInstance(instanceConnection);
+            return CreateDbContextInstance(instanceConnection, false);
         }
 
         private SqliteConnection CreatePrototypeConnection()
@@ -49,7 +49,7 @@ namespace Foxy.Testing.EntityFrameworkCore
             if (ShouldRunDatabasePreparation(prototypeConnection))
             {
                 prototypeConnection.Open();
-                using (var dbContext = CreateDbContextInstance(prototypeConnection))
+                using (var dbContext = CreateDbContextInstance(prototypeConnection, true))
                 {
                     dbContext.Database.Migrate();
                     PrepareDbContext(dbContext);
@@ -80,7 +80,7 @@ namespace Foxy.Testing.EntityFrameworkCore
             return lambda.Compile();
         }
 
-        protected virtual TDbContext CreateDbContextInstance(SqliteConnection connection)
+        protected virtual TDbContext CreateDbContextInstance(SqliteConnection connection, bool isPrototype)
         {
             var options = new DbContextOptionsBuilder<TDbContext>();
             options.UseSqlite(connection);
