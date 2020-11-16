@@ -1,6 +1,6 @@
 ﻿namespace Foxy.Testing.EntityFrameworkCore
 {
-    public class OtherDbContextFactory : BaseTestDatabaseFactory<OtherDbContext>
+    public class OtherDbContextFactory : TestDbContextFactory<OtherDbContext>
     {
 
     }

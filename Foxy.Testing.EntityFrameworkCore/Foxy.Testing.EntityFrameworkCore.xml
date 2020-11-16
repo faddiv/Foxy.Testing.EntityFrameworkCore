@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Foxy.Testing.EntityFrameworkCore</name>
+    </assembly>
+    <members>
+        <member name="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1">
+            <summary>
+            Provides base class for test DbContext factory classes (or can be used by itself if no setup is needed).
+            This class mades efficient creating DbContext with predictable initial state in SQLite database.
+            </summary>
+            <typeparam name="TDbContext">The derived class of DbContext to test.</typeparam>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1"/> class.
+            </summary>
+            <param name="prototypeConnectionString">Connection string used for the prototype connection. Default is memory database.</param>
+            <param name="instanceConnectionString">Connection string used for the test database instances. Default is memory database.</param>
+        </member>
+        <member name="P:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.PrototypeConnectionString">
+            <summary>
+            Gets the connection string used for the prototype connection.
+            </summary>
+        </member>
+        <member name="P:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.InstanceConnectionString">
+            <summary>
+            Gets the connection string used for the test database instances.
+            </summary>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.CreateDbContext">
+            <summary>
+            Creates a new instance of the <typeparamref name="TDbContext"/> and
+            copies the data from the prototype connection. On first call this creates
+            the prototype connection.
+            </summary>
+            <returns>A new instance of <typeparamref name="TDbContext"/> in initial state.</returns>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.ExecuteMigrate(`0)">
+            <summary>
+            Calls the <see cref="M:Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.Migrate(Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade)"/> method.
+            </summary>
+            <param name="dbContext">The <typeparamref name="TDbContext"/> on which the migration is called.</param>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.ShouldRunDatabasePreparation(Microsoft.Data.Sqlite.SqliteConnection)">
+            <summary>
+            Determines if the migration and the db context preparation should be executed.
+            </summary>
+            <param name="prototypeConnection">The unopened <see cref="T:Microsoft.Data.Sqlite.SqliteConnection"/> which will be used as prototype connection.</param>
+            <returns>True if the connection is in memory or points to an existing disk file.</returns>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.CreateDbContextInstance(Microsoft.Data.Sqlite.SqliteConnection,System.Boolean)">
+            <summary>
+            Calls the constructor of the <typeparamref name="TDbContext"/> with a
+            <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder`1"/> prepared for sqlite usage.
+            </summary>
+            <param name="connection">The connection used for the <typeparamref name="TDbContext"/>.</param>
+            <param name="isPrototype">If true then the prototype DbContext is created.</param>
+            <returns>A new instance of <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder`1"/>.</returns>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.ConfigureDbContextOptionsBuilder(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder{`0},System.Boolean)">
+            <summary>
+            Adds additional configurations in the derived classes.
+            </summary>
+            <param name="builder">The builder to configure.</param>
+            <param name="isPrototype">If true then the prototype DbContext is created.</param>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.PrepareDbContext(`0)">
+            <summary>
+            In the derived classes adds the initial data to the database. The SaveChanges is called after.
+            </summary>
+            <param name="context">The db context to use in database initialization.</param>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.Dispose(System.Boolean)">
+            <summary>
+            On true disposes the prototype connection.
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.Dispose">
+            <summary>
+            Disposes the prototype connection.
+            </summary>
+        </member>
+    </members>
+</doc>

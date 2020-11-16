@@ -6,7 +6,7 @@ using System.IO;
 
 namespace NorthwindDatabase
 {
-    public class NorthWindDatabaseFactory : BaseTestDatabaseFactory<TestDbContext>
+    public class NorthWindDatabaseFactory : TestDbContextFactory<TestDbContext>
     {
         private readonly DatabaseScaffold _scaffold;
         public static Lazy<string> sqliteLocation = new Lazy<string>(SqliteLocation);
@@ -75,10 +75,10 @@ namespace NorthwindDatabase
             return base.ShouldRunDatabasePreparation(prototypeConnection);
         }
 
-        protected override void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TestDbContext> builder)
+        protected override void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TestDbContext> builder, bool isPrototype)
         {
             Builder = builder;
-            base.ConfigureDbContextOptionsBuilder(builder);
+            base.ConfigureDbContextOptionsBuilder(builder, isPrototype);
         }
 
         protected override void ExecuteMigrate(TestDbContext dbContext)

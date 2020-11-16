@@ -7,16 +7,26 @@ using System.Threading;
 
 namespace Foxy.Testing.EntityFrameworkCore
 {
-    public class BaseTestDatabaseFactory<TDbContext>
+    /// <summary>
+    /// Provides base class for test DbContext factory classes (or can be used by itself if no setup is needed).
+    /// This class mades efficient creating DbContext with predictable initial state in SQLite database.
+    /// </summary>
+    /// <typeparam name="TDbContext">The derived class of DbContext to test.</typeparam>
+    public class TestDbContextFactory<TDbContext>
         where TDbContext : DbContext
     {
         private SqliteConnection _prototypeConnection;
         private object _syncLock = new object();
         private bool _initialized;
         private bool _disposedValue = false; // To detect redundant calls
-        private Lazy<Func<DbContextOptions<TDbContext>, TDbContext>> _constructor;
+        private readonly Lazy<Func<DbContextOptions<TDbContext>, TDbContext>> _constructor;
 
-        public BaseTestDatabaseFactory(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestDbContextFactory{TDbContext}"/> class.
+        /// </summary>
+        /// <param name="prototypeConnectionString">Connection string used for the prototype connection. Default is memory database.</param>
+        /// <param name="instanceConnectionString">Connection string used for the test database instances. Default is memory database.</param>
+        public TestDbContextFactory(
             string prototypeConnectionString = "Data Source=:memory:;",
             string instanceConnectionString = "Data Source=:memory:;")
         {
@@ -26,10 +36,22 @@ namespace Foxy.Testing.EntityFrameworkCore
                 CreateDbContextFactory, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
+        /// <summary>
+        /// Gets the connection string used for the prototype connection.
+        /// </summary>
         public string PrototypeConnectionString { get; }
 
+        /// <summary>
+        /// Gets the connection string used for the test database instances.
+        /// </summary>
         public string InstanceConnectionString { get; }
 
+        /// <summary>
+        /// Creates a new instance of the <typeparamref name="TDbContext"/> and
+        /// copies the data from the prototype connection. On first call this creates
+        /// the prototype connection.
+        /// </summary>
+        /// <returns>A new instance of <typeparamref name="TDbContext"/> in initial state.</returns>
         public TDbContext CreateDbContext()
         {
             LazyInitializer.EnsureInitialized(
@@ -63,11 +85,20 @@ namespace Foxy.Testing.EntityFrameworkCore
             return prototypeConnection;
         }
 
+        /// <summary>
+        /// Calls the <see cref="RelationalDatabaseFacadeExtensions.Migrate(Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade)"/> method.
+        /// </summary>
+        /// <param name="dbContext">The <typeparamref name="TDbContext"/> on which the migration is called.</param>
         protected virtual void ExecuteMigrate(TDbContext dbContext)
         {
             dbContext.Database.Migrate();
         }
 
+        /// <summary>
+        /// Determines if the migration and the db context preparation should be executed.
+        /// </summary>
+        /// <param name="prototypeConnection">The unopened <see cref="SqliteConnection"/> which will be used as prototype connection.</param>
+        /// <returns>True if the connection is in memory or points to an existing disk file.</returns>
         protected virtual bool ShouldRunDatabasePreparation(SqliteConnection prototypeConnection)
         {
             return string.Equals(prototypeConnection.DataSource, ":memory:", StringComparison.OrdinalIgnoreCase)
@@ -90,26 +121,46 @@ namespace Foxy.Testing.EntityFrameworkCore
             return lambda.Compile();
         }
 
+        /// <summary>
+        /// Calls the constructor of the <typeparamref name="TDbContext"/> with a
+        /// <see cref="DbContextOptionsBuilder{TDbContext}"/> prepared for sqlite usage.
+        /// </summary>
+        /// <param name="connection">The connection used for the <typeparamref name="TDbContext"/>.</param>
+        /// <param name="isPrototype">If true then the prototype DbContext is created.</param>
+        /// <returns>A new instance of <see cref="DbContextOptionsBuilder{TDbContext}"/>.</returns>
         protected virtual TDbContext CreateDbContextInstance(SqliteConnection connection, bool isPrototype)
         {
             var options = new DbContextOptionsBuilder<TDbContext>();
             options.UseSqlite(connection);
-            ConfigureDbContextOptionsBuilder(options);
+            ConfigureDbContextOptionsBuilder(options, isPrototype);
 
             return _constructor.Value(options.Options);
         }
 
-        protected virtual void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TDbContext> builder)
+        /// <summary>
+        /// Adds additional configurations in the derived classes.
+        /// </summary>
+        /// <param name="builder">The builder to configure.</param>
+        /// <param name="isPrototype">If true then the prototype DbContext is created.</param>
+        protected virtual void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TDbContext> builder, bool isPrototype)
         {
 
         }
 
+        /// <summary>
+        /// In the derived classes adds the initial data to the database. The SaveChanges is called after.
+        /// </summary>
+        /// <param name="context">The db context to use in database initialization.</param>
         protected virtual void PrepareDbContext(TDbContext context)
         {
         }
 
         #region IDisposable Support
 
+        /// <summary>
+        /// On true disposes the prototype connection.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -122,10 +173,14 @@ namespace Foxy.Testing.EntityFrameworkCore
             }
         }
 
+        /// <summary>
+        /// Disposes the prototype connection.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
         }
+
         #endregion
     }
 }
