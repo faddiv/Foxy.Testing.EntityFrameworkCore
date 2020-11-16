@@ -51,7 +51,7 @@ namespace Foxy.Testing.EntityFrameworkCore
                 prototypeConnection.Open();
                 using (var dbContext = CreateDbContextInstance(prototypeConnection, true))
                 {
-                    dbContext.Database.Migrate();
+                    ExecuteMigrate(dbContext);
                     PrepareDbContext(dbContext);
                     dbContext.SaveChanges();
                 }
@@ -61,6 +61,11 @@ namespace Foxy.Testing.EntityFrameworkCore
                 prototypeConnection.Open();
             }
             return prototypeConnection;
+        }
+
+        protected virtual void ExecuteMigrate(TDbContext dbContext)
+        {
+            dbContext.Database.Migrate();
         }
 
         protected virtual bool ShouldRunDatabasePreparation(SqliteConnection prototypeConnection)

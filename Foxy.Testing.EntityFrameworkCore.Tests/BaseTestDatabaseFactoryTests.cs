@@ -124,5 +124,19 @@ namespace Foxy.Testing.EntityFrameworkCore
             // Assert
             instance.Builder.Should().NotBeNull();
         }
+
+        [Fact]
+        public void ExecuteMigrate_is_called()
+        {
+            // Arrange
+            var instance = new NorthWindDatabaseFactory();
+
+            // Act
+            var dbContext = instance.CreateDbContext();
+
+            // Assert
+            instance.MigratedDbContext.Should().NotBeNull();
+            instance.MigratedDbContext.Should().NotBeSameAs(dbContext);
+        }
     }
 }

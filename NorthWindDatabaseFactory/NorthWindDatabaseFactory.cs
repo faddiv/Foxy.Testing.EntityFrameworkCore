@@ -26,6 +26,7 @@ namespace NorthwindDatabase
         public SqliteConnection Instance { get; set; }
 
         public DbContextOptionsBuilder<TestDbContext> Builder { get; private set; }
+        public TestDbContext MigratedDbContext { get; private set; }
 
         private static string SqliteLocation()
         {
@@ -78,6 +79,12 @@ namespace NorthwindDatabase
         {
             Builder = builder;
             base.ConfigureDbContextOptionsBuilder(builder);
+        }
+
+        protected override void ExecuteMigrate(TestDbContext dbContext)
+        {
+            MigratedDbContext = dbContext;
+            base.ExecuteMigrate(dbContext);
         }
     }
 }
