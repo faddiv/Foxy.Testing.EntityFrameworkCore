@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Viktor Faddi</Authors>
+    <Description>A library that improves SqlLite based Entity Framework Core test runs speed.</Description>
+    <Copyright>Copyright © Viktor Faddi 2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/faddiv/Foxy.Testing.EntityFrameworkCore</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Test; Testing; Entity; Framework; Core; EntityFrameworkCore; EFCore; SQLite</PackageTags>
+    <PackageReleaseNotes>See https://github.com/faddiv/Foxy.Testing.EntityFrameworkCore/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/faddiv/Foxy.Testing.EntityFrameworkCore</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -10,6 +21,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="3.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
