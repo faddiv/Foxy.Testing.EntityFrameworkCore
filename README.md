@@ -42,7 +42,7 @@ And lastly use in your test. (Example wit xUnit)
     }
 ```
 
-# Additional use cases
+# Configuration and extension points
 ## Constructor parameters
 There are two connection needed by ```BaseTestDatabaseFactory``` which can be provided in the constructor parameters. the default wor both is ```"Data Source=:memory:;"```
  - prototypeConnectionString: This is used on the first run. It will be the connectionstring for the database which are held on the entire test run and copyed from.
@@ -50,12 +50,32 @@ There are two connection needed by ```BaseTestDatabaseFactory``` which can be pr
 
 If you would like to speed up the prototype database creation also you can change the prototypeConnectionString to point to a disk file. If the file was already created then the database preparation skipped otherwise it is performed.
 
+## PrepareDbContext
+In this overridable class you can fill the prototype database with data. This is called only once. On the first initialization.
+
 ## ShouldRunDatabasePreparation
-TODO
+Determines if the migration and the db context preparation should be executed. This method is overridable. By default, it returns true if the database in memory or if a non existing disk file.
 
-## Migration
-TODO
+## ExecuteMigrate
+Executes the migration. It is overridable. Unfortunatelly not every migration step is performable on sqlite database so I left this open to change.
 
-## Prepare DbContextOptionsBuilder
-TODO
+## ConfigureDbContextOptionsBuilder
+Overridable method in which you can add additional setups to the ```DbContextOptionsBuilder```. For both prototype and instace connection. the ```isPrototype``` parameter determines which is created.
 
+# Benchmark
+Here is some benchmark about the database creation speed. The ClassicCreation creates a sqlite database and fills it with data from csv-s. In the FastCreation the prototype database is in memory. In the SnapshotCreation the prepared prototype database loaded from disk.
+The FastCreation helps best when the initialization is small. The SnapshotCreation helps best when the initialization is big like when you fill up the Northwind database with the example data.
+
+<pre>
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.19041.630 (2004/?/20H1)
+AMD Ryzen 5 2600, 1 CPU, 12 logical and 6 physical cores
+.NET Core SDK=5.0.100
+  [Host]     : .NET Core 3.1.9 (CoreCLR 4.700.20.47201, CoreFX 4.700.20.47203), X64 RyuJIT
+  Job-UAGRXG : .NET Core 3.1.9 (CoreCLR 4.700.20.47201, CoreFX 4.700.20.47203), X64 RyuJIT
+</pre>
+<pre>OutlierMode=RemoveAll</pre>
+|Method|Mean|Error|StdDev|Rank|
+|--- |--- |--- |--- |--- |
+|ClassicCreation|713,003.6 μs|5,133.79 μs|4,550.97 μs|3|
+|FastCreation|352.7 μs|6.64 μs|7.65 μs|1|
+|SnapshotCreation|1,873.1 μs|28.68 μs|47.93 μs|2|

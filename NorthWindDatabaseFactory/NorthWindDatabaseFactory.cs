@@ -21,11 +21,8 @@ namespace NorthwindDatabase
             _scaffold = scaffold ?? new DatabaseScaffold();
         }
 
-        public SqliteConnection Prototype { get; set; }
-
-        public SqliteConnection Instance { get; set; }
-
         public DbContextOptionsBuilder<TestDbContext> Builder { get; private set; }
+
         public TestDbContext MigratedDbContext { get; private set; }
 
         private static string SqliteLocation()
@@ -48,20 +45,6 @@ namespace NorthwindDatabase
         private static string GetFile(string directory)
         {
             return Path.Combine(directory, "prototype.db");
-        }
-
-        protected override TestDbContext CreateDbContextInstance(SqliteConnection connection, bool isPrototype)
-        {
-            if (isPrototype)
-            {
-                Prototype = connection;
-            }
-            else
-            {
-                Instance = connection;
-            }
-
-            return base.CreateDbContextInstance(connection, isPrototype);
         }
 
         protected override void PrepareDbContext(TestDbContext context)

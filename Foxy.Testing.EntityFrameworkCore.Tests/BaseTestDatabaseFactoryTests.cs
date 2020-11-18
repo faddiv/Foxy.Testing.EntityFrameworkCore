@@ -97,22 +97,6 @@ namespace Foxy.Testing.EntityFrameworkCore
         }
 
         [Fact]
-        public void CreateDbContext_first_creates_prototype_then_instance()
-        {
-            // Arrange
-            var instance = new NorthWindDatabaseFactory();
-
-            // Act
-            var dbContext = instance.CreateDbContext();
-
-            // Assert
-            instance.Prototype.Should().NotBeNull();
-            instance.Instance.Should().NotBeNull();
-            instance.Instance.Should().BeSameAs(dbContext.Database.GetDbConnection());
-            instance.Prototype.Should().NotBeSameAs(instance.Instance);
-        }
-
-        [Fact]
         public void ConfigureDbContextOptionsBuilder_is_called()
         {
             // Arrange

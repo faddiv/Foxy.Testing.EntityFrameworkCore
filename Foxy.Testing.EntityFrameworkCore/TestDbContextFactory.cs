@@ -121,14 +121,7 @@ namespace Foxy.Testing.EntityFrameworkCore
             return lambda.Compile();
         }
 
-        /// <summary>
-        /// Calls the constructor of the <typeparamref name="TDbContext"/> with a
-        /// <see cref="DbContextOptionsBuilder{TDbContext}"/> prepared for sqlite usage.
-        /// </summary>
-        /// <param name="connection">The connection used for the <typeparamref name="TDbContext"/>.</param>
-        /// <param name="isPrototype">If true then the prototype DbContext is created.</param>
-        /// <returns>A new instance of <see cref="DbContextOptionsBuilder{TDbContext}"/>.</returns>
-        protected virtual TDbContext CreateDbContextInstance(SqliteConnection connection, bool isPrototype)
+        private TDbContext CreateDbContextInstance(SqliteConnection connection, bool isPrototype)
         {
             var options = new DbContextOptionsBuilder<TDbContext>();
             options.UseSqlite(connection);
@@ -138,7 +131,8 @@ namespace Foxy.Testing.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Adds additional configurations in the derived classes.
+        /// Adds additional configurations to the <see cref="DbContextOptionsBuilder{TDbContext}"/>
+        /// in the derived classes.
         /// </summary>
         /// <param name="builder">The builder to configure.</param>
         /// <param name="isPrototype">If true then the prototype DbContext is created.</param>
