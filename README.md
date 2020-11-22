@@ -6,7 +6,9 @@ A library that improves SQLite based Entity Framework Core test run speed.
 There are two approach in the microsoft's entity framework core documentation for testing database queries. One is [test with InMemory](https://docs.microsoft.com/en-us/ef/core/testing/in-memory) and the other is [test with SQLite](https://docs.microsoft.com/en-us/ef/core/testing/sqlite). Both has their benefits and drawbacks. I prefer the SQLite approach. One of the drawbacks is that it can be very slow if there is lots of db unit tests even with in memory database. The reason is to use it in an unit test in isolation is that you need to set up an initial database for every test. You can boost this setup greatly if you init a database once then you use a copy of it which can be created with ```SqliteConnection.BackupDatabase``` method. This package does exactly that and hides it behind a nice facade.
 
 # Basic usage
-The simplest form you just need to create a derived class from the ```BaseTestDatabaseFactory<YourDbContext>``` and optionally prepare the initial data.
+First you have to install this package and the Microsoft.EntityFrameworkCore.Sqlite package.
+
+The simplest form you just need to create a derived class from the ```BaseTestDatabaseFactory<YourDbContext>``` and optionally prepare the initial data then use it to create DbConnection or DbContext.
 
 ```csharp
 public class YourDatabaseFactory : BaseTestDatabaseFactory<YourDbContext>
@@ -27,14 +29,14 @@ Or
     public YourDbContext(DbContextOptions<YourDbContext> options) : base(options) { }
 ```
 
-Then you make an instance into a static field or Property.
+You should make an instance of this factory as a static field or Property.
 ```csharp
     public static class TestDatabase {
         public static YourDatabaseFactory Instance { get; } = new YourDatabaseFactory(
     }
 ```
 
-And lastly use in your test. (Example with xUnit)
+Then you can use it in your test. (Example with xUnit)
 ```csharp
     [Fact]
     public void TestMyDb() {
@@ -44,7 +46,7 @@ And lastly use in your test. (Example with xUnit)
     }
 ```
 
-Or create a DbConnection and use it directly. You can create a DbContext easly with CreateDbContext(connection). This helps if multiple DbContext needed with the same connection.
+Or create a DbConnection and use it directly. You can create a DbContext easly with CreateDbContext(connection). This helps if multiple DbContext needed with the same connection. Use this connection only in one test so you can keep the isolation of your tests.
 ```csharp
     [Fact]
     public void TestMyDb() {
@@ -92,3 +94,8 @@ AMD Ryzen 5 2600, 1 CPU, 12 logical and 6 physical cores
 |ClassicCreation|713,003.6 μs|5,133.79 μs|4,550.97 μs|3|
 |FastCreation|352.7 μs|6.64 μs|7.65 μs|1|
 |SnapshotCreation|1,873.1 μs|28.68 μs|47.93 μs|2|
+
+# Thanks
+Thanks for .net development team because of the documentation comments in the .net ecosystem. It helped me out to write my own documentation that hopefully have sense.
+
+I also say thank you for my colleague Horia who designed the foxy icon.
