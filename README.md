@@ -1,7 +1,7 @@
 # Foxy.Testing.EntityFrameworkCore
 [![Build status](https://ci.appveyor.com/api/projects/status/0kt2pxhi6r2cbpeq?svg=true)](https://ci.appveyor.com/project/faddiv/foxy-testing-entityframeworkcore)
 
-A library that improves SqlLite based Entity Framework Core test runs speed.
+A library that improves SQLite based Entity Framework Core test run speed.
 
 There are two approach in the microsoft's entity framework core documentation for testing database queries. One is [test with InMemory](https://docs.microsoft.com/en-us/ef/core/testing/in-memory) and the other is [test with SQLite](https://docs.microsoft.com/en-us/ef/core/testing/sqlite). Both has their benefits and drawbacks. I prefer the SQLite approach. One of the drawbacks is that it can be very slow if there is lots of db unit tests even with in memory database. The reason is to use it in an unit test in isolation is that you need to set up an initial database for every test. You can boost this setup greatly if you init a database once then you use a copy of it which can be created with ```SqliteConnection.BackupDatabase``` method. This package does exactly that and hides it behind a nice facade.
 
