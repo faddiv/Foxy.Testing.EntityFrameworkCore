@@ -34,7 +34,38 @@
             copies the data from the prototype connection. On first call this creates
             the prototype connection.
             </summary>
-            <returns>A new instance of <typeparamref name="TDbContext"/> in initial state.</returns>
+            <returns>A new instance of the <typeparamref name="TDbContext"/> in initial state.</returns>
+            <exception cref="T:System.ArgumentNullException">connection is null.</exception>
+            <exception cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException">
+            The constructor of the <typeparamref name="TDbContext"/> doesn't
+            have a single parameter with type <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptions`1"/>;
+            </exception>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.CreateDbContext(Microsoft.Data.Sqlite.SqliteConnection)">
+            <summary>
+            Creates an instance from <typeparamref name="TDbContext"/> inicializing
+            with the provided SqliteConnection.
+            </summary>
+            <remarks>
+            This call doesn't initializes the database but
+            intended to use to create a new DbContext on the same connection.
+            </remarks>
+            <param name="connection">The connection to use for the DbContext.</param>
+            <returns>A new instace of <typeparamref name="TDbContext"/>
+            with the provided connection as underlying database.</returns>
+            <exception cref="T:System.ArgumentNullException">connection is null.</exception>
+            <exception cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException">
+            The constructor of the <typeparamref name="TDbContext"/> doesn't
+            have a single parameter with type <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptions`1"/>;
+            </exception>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.CreateDbConnection">
+            <summary>
+            Creates a new instance of the <see cref="T:Microsoft.Data.Sqlite.SqliteConnection"/> and
+            copies the data from the prototype connection. On first call this creates
+            the prototype connection.
+            </summary>
+            <returns>A new instance of the <see cref="T:Microsoft.Data.Sqlite.SqliteConnection"/> in initial state.</returns>
         </member>
         <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.ExecuteMigrate(`0)">
             <summary>
@@ -49,18 +80,10 @@
             <param name="prototypeConnection">The unopened <see cref="T:Microsoft.Data.Sqlite.SqliteConnection"/> which will be used as prototype connection.</param>
             <returns>True if the connection is in memory or points to an existing disk file.</returns>
         </member>
-        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.CreateDbContextInstance(Microsoft.Data.Sqlite.SqliteConnection,System.Boolean)">
-            <summary>
-            Calls the constructor of the <typeparamref name="TDbContext"/> with a
-            <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder`1"/> prepared for sqlite usage.
-            </summary>
-            <param name="connection">The connection used for the <typeparamref name="TDbContext"/>.</param>
-            <param name="isPrototype">If true then the prototype DbContext is created.</param>
-            <returns>A new instance of <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder`1"/>.</returns>
-        </member>
         <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.ConfigureDbContextOptionsBuilder(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder{`0},System.Boolean)">
             <summary>
-            Adds additional configurations in the derived classes.
+            Adds additional configurations to the <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder`1"/>
+            in the derived classes.
             </summary>
             <param name="builder">The builder to configure.</param>
             <param name="isPrototype">If true then the prototype DbContext is created.</param>
@@ -80,6 +103,31 @@
         <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1.Dispose">
             <summary>
             Disposes the prototype connection.
+            </summary>
+        </member>
+        <member name="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException">
+            <summary>
+            The exception that is thrown when something went wrong in the <see cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactory`1"/>.
+            </summary>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException"/> class.
+            </summary>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException"/> class.
+            </summary>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException"/> class.
+            </summary>
+        </member>
+        <member name="M:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Foxy.Testing.EntityFrameworkCore.TestDbContextFactoryException"/> class.
             </summary>
         </member>
     </members>

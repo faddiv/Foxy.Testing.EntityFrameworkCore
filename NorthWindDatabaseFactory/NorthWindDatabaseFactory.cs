@@ -25,6 +25,8 @@ namespace NorthwindDatabase
 
         public TestDbContext MigratedDbContext { get; private set; }
 
+        public bool? LastIsPrototype { get; set; }
+
         private static string SqliteLocation()
         {
             var directory = Environment.CurrentDirectory;
@@ -61,6 +63,7 @@ namespace NorthwindDatabase
         protected override void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TestDbContext> builder, bool isPrototype)
         {
             Builder = builder;
+            LastIsPrototype = isPrototype;
             base.ConfigureDbContextOptionsBuilder(builder, isPrototype);
         }
 

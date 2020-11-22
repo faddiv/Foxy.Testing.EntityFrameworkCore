@@ -1,10 +1,19 @@
 using FluentAssertions;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using NorthwindDatabase;
 
 namespace Foxy.Testing.EntityFrameworkCore
 {
     public class TestHelpers
     {
+        public static void ShouldBePrepared(SqliteConnection dbConnection)
+        {
+            var builder = new DbContextOptionsBuilder<TestDbContext>();
+            builder.UseSqlite(dbConnection);
+            using var context = new TestDbContext(builder.Options);
+            ShouldBePrepared(context);
+        }
         public static void ShouldBePrepared(TestDbContext context)
         {
             context.Categories.Should().NotBeEmpty();
@@ -19,5 +28,13 @@ namespace Foxy.Testing.EntityFrameworkCore
             context.Suppliers.Should().NotBeEmpty();
             context.Territories.Should().NotBeEmpty();
         }
+
+        public static void MakeFirstCall(NorthWindDatabaseFactory instance)
+        {
+#pragma warning disable CS0642 // Possible mistaken empty statement
+            using (instance.CreateDbContext()) ;
+#pragma warning restore CS0642 // Possible mistaken empty statement
+        }
+
     }
 }

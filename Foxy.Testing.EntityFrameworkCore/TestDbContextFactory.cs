@@ -12,7 +12,7 @@ namespace Foxy.Testing.EntityFrameworkCore
     /// This class mades efficient creating DbContext with predictable initial state in SQLite database.
     /// </summary>
     /// <typeparam name="TDbContext">The derived class of DbContext to test.</typeparam>
-    public class TestDbContextFactory<TDbContext>
+    public class TestDbContextFactory<TDbContext> : IDisposable
         where TDbContext : DbContext
     {
         private SqliteConnection _prototypeConnection;
@@ -51,18 +51,65 @@ namespace Foxy.Testing.EntityFrameworkCore
         /// copies the data from the prototype connection. On first call this creates
         /// the prototype connection.
         /// </summary>
-        /// <returns>A new instance of <typeparamref name="TDbContext"/> in initial state.</returns>
+        /// <returns>A new instance of the <typeparamref name="TDbContext"/> in initial state.</returns>
+        /// <exception cref="ArgumentNullException">connection is null.</exception>
+        /// <exception cref="TestDbContextFactoryException">
+        /// The constructor of the <typeparamref name="TDbContext"/> doesn't
+        /// have a single parameter with type <see cref="DbContextOptions{TDbContext}"/>;
+        /// </exception>
         public TDbContext CreateDbContext()
         {
+            var instanceConnection = CreateDbConnection();
+            return CreateDbContext(instanceConnection);
+        }
+
+        /// <summary>
+        /// Creates an instance from <typeparamref name="TDbContext"/> inicializing
+        /// with the provided SqliteConnection.
+        /// </summary>
+        /// <remarks>
+        /// This call doesn't initializes the database but
+        /// intended to use to create a new DbContext on the same connection.
+        /// </remarks>
+        /// <param name="connection">The connection to use for the DbContext.</param>
+        /// <returns>A new instace of <typeparamref name="TDbContext"/>
+        /// with the provided connection as underlying database.</returns>
+        /// <exception cref="ArgumentNullException">connection is null.</exception>
+        /// <exception cref="TestDbContextFactoryException">
+        /// The constructor of the <typeparamref name="TDbContext"/> doesn't
+        /// have a single parameter with type <see cref="DbContextOptions{TDbContext}"/>;
+        /// </exception>
+        public TDbContext CreateDbContext(SqliteConnection connection)
+        {
+            if (connection is null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            var options = new DbContextOptionsBuilder<TDbContext>();
+            options.UseSqlite(connection);
+            ConfigureDbContextOptionsBuilder(options, false);
+
+            return _constructor.Value(options.Options);
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="SqliteConnection"/> and
+        /// copies the data from the prototype connection. On first call this creates
+        /// the prototype connection.
+        /// </summary>
+        /// <returns>A new instance of the <see cref="SqliteConnection"/> in initial state.</returns>
+        public SqliteConnection CreateDbConnection()
+        {
             LazyInitializer.EnsureInitialized(
-                ref _prototypeConnection,
-                ref _initialized,
-                ref _syncLock,
-                CreatePrototypeConnection);
+                   ref _prototypeConnection,
+                   ref _initialized,
+                   ref _syncLock,
+                   CreatePrototypeConnection);
             var instanceConnection = new SqliteConnection(InstanceConnectionString);
             instanceConnection.Open();
             _prototypeConnection.BackupDatabase(instanceConnection);
-            return CreateDbContextInstance(instanceConnection, false);
+            return instanceConnection;
         }
 
         private SqliteConnection CreatePrototypeConnection()
@@ -71,7 +118,7 @@ namespace Foxy.Testing.EntityFrameworkCore
             if (ShouldRunDatabasePreparation(prototypeConnection))
             {
                 prototypeConnection.Open();
-                using (var dbContext = CreateDbContextInstance(prototypeConnection, true))
+                using (var dbContext = CreatePrototypeDbContextInstance(prototypeConnection))
                 {
                     ExecuteMigrate(dbContext);
                     PrepareDbContext(dbContext);
@@ -114,18 +161,18 @@ namespace Foxy.Testing.EntityFrameworkCore
                 constructor = dbContextType.GetConstructor(new[] { typeof(DbContextOptions<TDbContext>) });
             }
             if (constructor == null)
-                throw new Exception($"Either CreateDbContextInstance must be overidden or {typeof(DbContextOptions).Name} needs a constructor with DbContextOptions parameter.");
+                throw new TestDbContextFactoryException($"Either CreateDbContextInstance must be overidden or {typeof(DbContextOptions).Name} needs a constructor with DbContextOptions parameter.");
             var parameter = Expression.Parameter(typeof(DbContextOptions<TDbContext>), "options");
             var ctor = Expression.New(constructor, parameter);
             var lambda = Expression.Lambda<Func<DbContextOptions<TDbContext>, TDbContext>>(ctor, parameter);
             return lambda.Compile();
         }
 
-        private TDbContext CreateDbContextInstance(SqliteConnection connection, bool isPrototype)
+        private TDbContext CreatePrototypeDbContextInstance(SqliteConnection connection)
         {
             var options = new DbContextOptionsBuilder<TDbContext>();
             options.UseSqlite(connection);
-            ConfigureDbContextOptionsBuilder(options, isPrototype);
+            ConfigureDbContextOptionsBuilder(options, true);
 
             return _constructor.Value(options.Options);
         }

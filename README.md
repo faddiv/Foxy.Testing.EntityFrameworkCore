@@ -16,7 +16,7 @@ public class YourDatabaseFactory : BaseTestDatabaseFactory<YourDbContext>
 }
 ```
 
-And your DbContext must have a constructor with ```DbContextOptions``` parameter.
+Your DbContext must have a constructor with ```DbContextOptions``` parameter.
 ```csharp
     public YourDbContext(DbContextOptions options) : base(options) { }
 ```
@@ -32,12 +32,23 @@ Then you make an instance into a static field or Property.
     }
 ```
 
-And lastly use in your test. (Example wit xUnit)
+And lastly use in your test. (Example with xUnit)
 ```csharp
     [Fact]
     public void TestMyDb() {
         using var dbContext = TestDatabase.Instance.CreateDbContext();
 
+        // Perform your test.
+    }
+```
+
+Or create a DbConnection and use it directly. You can create a DbContext easly with CreateDbContext(connection). This helps if multiple DbContext needed with the same connection.
+```csharp
+    [Fact]
+    public void TestMyDb() {
+        using var connection = TestDatabase.Instance.CreateDbConnection();
+        // Database is prepared here. The next line just creates a DbContext.
+        using var dbConext = TestDatabase.Instance.CreateDbContext(connection);
         // Perform your test.
     }
 ```

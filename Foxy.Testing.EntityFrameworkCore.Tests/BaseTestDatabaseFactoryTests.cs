@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NorthwindDatabase;
 using System.Data;
 using Xunit;
@@ -14,7 +13,7 @@ namespace Foxy.Testing.EntityFrameworkCore
         {
             // Arrange
             // Act
-            var instance = new NorthWindDatabaseFactory();
+            using var instance = new NorthWindDatabaseFactory();
 
             // Assert
             instance.PrototypeConnectionString.Should().Be("Data Source=:memory:;");
@@ -25,10 +24,10 @@ namespace Foxy.Testing.EntityFrameworkCore
         public void CreateDbContext_creates_an_instance()
         {
             // Arrange
-            var instance = new NorthWindDatabaseFactory();
+            using var instance = new NorthWindDatabaseFactory();
 
             // Act
-            var dbContext = instance.CreateDbContext();
+            using var dbContext = instance.CreateDbContext();
 
             // Assert
             dbContext.Should().NotBeNull();
@@ -38,10 +37,10 @@ namespace Foxy.Testing.EntityFrameworkCore
         public void CreateDbContext_opens_the_database()
         {
             // Arrange
-            var instance = new NorthWindDatabaseFactory();
+            using var instance = new NorthWindDatabaseFactory();
 
             // Act
-            var dbContext = instance.CreateDbContext();
+            using var dbContext = instance.CreateDbContext();
 
             // Assert
             var connection = dbContext.Database.GetDbConnection();
@@ -52,10 +51,10 @@ namespace Foxy.Testing.EntityFrameworkCore
         public void CreateDbContext_prepares_the_db_context()
         {
             // Arrange
-            var instance = new NorthWindDatabaseFactory();
+            using var instance = new NorthWindDatabaseFactory();
 
             // Act
-            var dbContext = instance.CreateDbContext();
+            using var dbContext = instance.CreateDbContext();
 
             // Assert
             dbContext.Should().NotBeNull();
@@ -67,12 +66,12 @@ namespace Foxy.Testing.EntityFrameworkCore
         {
             // Arrange
             var count = 0;
-            var instance = new NorthWindDatabaseFactory();
+            using var instance = new NorthWindDatabaseFactory();
             instance.Prepared += () => count++;
 
             // Act
-            instance.CreateDbContext();
-            var dbContext = instance.CreateDbContext();
+            TestHelpers.MakeFirstCall(instance);
+            using var dbContext = instance.CreateDbContext();
 
             // Assert
             count.Should().Be(1);
@@ -84,12 +83,12 @@ namespace Foxy.Testing.EntityFrameworkCore
         {
             // Arrange
             var count = 0;
-            var instance = new NorthWindDatabaseFactory(snapshot: true);
+            using var instance = new NorthWindDatabaseFactory(snapshot: true);
             instance.Prepared += () => count++;
 
             // Act
-            instance.CreateDbContext();
-            var dbContext = instance.CreateDbContext();
+            TestHelpers.MakeFirstCall(instance);
+            using var dbContext = instance.CreateDbContext();
 
             // Assert
             count.Should().Be(0);
@@ -100,10 +99,10 @@ namespace Foxy.Testing.EntityFrameworkCore
         public void ConfigureDbContextOptionsBuilder_is_called()
         {
             // Arrange
-            var instance = new NorthWindDatabaseFactory();
+            using var instance = new NorthWindDatabaseFactory();
 
             // Act
-            instance.CreateDbContext();
+            TestHelpers.MakeFirstCall(instance);
 
             // Assert
             instance.Builder.Should().NotBeNull();
@@ -113,10 +112,10 @@ namespace Foxy.Testing.EntityFrameworkCore
         public void ExecuteMigrate_is_called()
         {
             // Arrange
-            var instance = new NorthWindDatabaseFactory();
+            using var instance = new NorthWindDatabaseFactory();
 
             // Act
-            var dbContext = instance.CreateDbContext();
+            using var dbContext = instance.CreateDbContext();
 
             // Assert
             instance.MigratedDbContext.Should().NotBeNull();
@@ -126,11 +125,12 @@ namespace Foxy.Testing.EntityFrameworkCore
         [Fact]
         public void Works_with_generic_DbContextOptions()
         {
-            var factory = new OtherDbContextFactory();
+            using var factory = new OtherDbContextFactory();
 
-            var result = factory.CreateDbContext();
+            using var result = factory.CreateDbContext();
 
             result.Should().NotBeNull();
         }
+
     }
 }

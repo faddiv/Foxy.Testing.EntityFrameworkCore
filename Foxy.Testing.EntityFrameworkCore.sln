@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foxy.Testing.EntityFramewor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthWindDatabaseFactory", "NorthWindDatabaseFactory\NorthWindDatabaseFactory.csproj", "{7B6942FA-D81B-46FD-9FFD-D23DF20E5B14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples", "Examples\Examples.csproj", "{628456A6-C62A-41C5-93F3-B81D3ED23AC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7B6942FA-D81B-46FD-9FFD-D23DF20E5B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B6942FA-D81B-46FD-9FFD-D23DF20E5B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B6942FA-D81B-46FD-9FFD-D23DF20E5B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{628456A6-C62A-41C5-93F3-B81D3ED23AC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{628456A6-C62A-41C5-93F3-B81D3ED23AC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{628456A6-C62A-41C5-93F3-B81D3ED23AC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{628456A6-C62A-41C5-93F3-B81D3ED23AC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
