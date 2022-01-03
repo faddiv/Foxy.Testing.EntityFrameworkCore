@@ -3,15 +3,15 @@
 
 A library that improves SQLite based Entity Framework Core test run speed.
 
-There are two approach in the microsoft's entity framework core documentation for testing database queries. One is [test with InMemory](https://docs.microsoft.com/en-us/ef/core/testing/in-memory) and the other is [test with SQLite](https://docs.microsoft.com/en-us/ef/core/testing/sqlite). Both has their benefits and drawbacks. I prefer the SQLite approach. One of the drawbacks is that it can be very slow if there is lots of db unit tests even with in memory database. The reason is to use it in an unit test in isolation is that you need to set up an initial database for every test. You can boost this setup greatly if you init a database once then you use a copy of it which can be created with ```SqliteConnection.BackupDatabase``` method. This package does exactly that and hides it behind a nice facade.
+There are two approach in the microsoft's entity framework core documentation for testing database queries. One is [test with InMemory](https://docs.microsoft.com/en-us/ef/core/testing/in-memory) and the other is [test with SQLite](https://docs.microsoft.com/en-us/ef/core/testing/sqlite). Both has their benefits and drawbacks. I prefer the SQLite approach. One of the drawbacks is that it can be very slow if there is lots of db unit tests even with in memory database. The reason is that you need to set up an initial database for every test if you want to use it in isolation. You can boost this setup greatly if you init a database once then you use a copy of it which can be created with ```SqliteConnection.BackupDatabase``` method. This package does exactly that and hides it behind a nice facade.
 
 # Basic usage
-First you have to install this package and the Microsoft.EntityFrameworkCore.Sqlite package.
+First, you have to install this package and the Microsoft.EntityFrameworkCore.Sqlite package.
 
-The simplest form you just need to create a derived class from the ```BaseTestDatabaseFactory<YourDbContext>``` and optionally prepare the initial data then use it to create DbConnection or DbContext.
+In the simplest form you just need to create a derived class from the ```TestDbContextFactory<YourDbContext>``` and optionally prepare the initial data then use it to create DbConnection or DbContext.
 
 ```csharp
-public class YourDatabaseFactory : BaseTestDatabaseFactory<YourDbContext>
+public class YourDatabaseFactory : TestDbContextFactory<YourDbContext>
 {
     protected override void PrepareDbContext(TestDbContext context)
     {
@@ -59,22 +59,22 @@ Or create a DbConnection and use it directly. You can create a DbContext easly w
 
 # Configuration and extension points
 ## Constructor parameters
-There are two connection needed by ```BaseTestDatabaseFactory``` which can be provided in the constructor parameters. the default wor both is ```"Data Source=:memory:;"```
+There are two connections needed by ```TestDbContextFactory``` which can be provided in the constructor parameters. the default for both is ```"Data Source=:memory:;"```
  - prototypeConnectionString: This is used on the first run. It will be the connectionstring for the database which are held on the entire test run and copyed from.
  - instanceConnectionString: This is used in every CreateDbContext. It is fillled with data from the prototype connection.
 
-If you would like to speed up the prototype database creation also you can change the prototypeConnectionString to point to a disk file. If the file was already created then the database preparation skipped otherwise it is performed.
+If you would like to speed up the prototype database creation also, you can change the prototypeConnectionString to point to a disk file. If the file was already created then the database preparation skipped otherwise it is performed.
 
-## PrepareDbContext
-In this overridable class you can fill the prototype database with data. This is called only once. On the first initialization.
+## void PrepareDbContext(TDbContext context)
+In this overridable class you can fill the prototype database with data. This will be called only once. On the first initialization.
 
-## ShouldRunDatabasePreparation
-Determines if the migration and the db context preparation should be executed. This method is overridable. By default, it returns true if the database in memory or if a non existing disk file.
+## bool ShouldRunDatabasePreparation(SqliteConnection prototypeConnection)
+Determines if the migration and the db context preparation should be executed. This method is overridable. By default, it returns true if the database in memory or if a non-existing disk file.
 
-## ExecuteMigrate
+## void ExecuteMigrate(TDbContext dbContext)
 Executes the migration. It is overridable. Unfortunatelly not every migration step is performable on sqlite database so I left this open to change.
 
-## ConfigureDbContextOptionsBuilder
+## void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder<TDbContext> builder, bool isPrototype)
 Overridable method in which you can add additional setups to the ```DbContextOptionsBuilder```. For both prototype and instace connection. the ```isPrototype``` parameter determines which is created.
 
 # Benchmark
